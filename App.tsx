@@ -12,16 +12,17 @@ import Select from './components/Select';
 import MultiSelect from './components/MultiSelect';
 import Button from './components/Button';
 import PreviewModal from './components/PreviewModal';
-import XIcon from './components/icons/XIcon';
 import ThemeToggle from './components/ThemeToggle';
 import Stepper from './components/Stepper';
 import AgentSelector from './components/AgentSelector';
 import SparklesIcon from './components/icons/SparklesIcon';
+import ChevronRightIcon from './components/icons/ChevronRightIcon';
+import ChevronLeftIcon from './components/icons/ChevronLeftIcon';
 
 type FormErrors = Partial<Record<keyof FormData, string>>;
 type Theme = 'light' | 'dark';
 
-const STEPS = ["Project Discovery", "Architecture", "AI Team Assembly", "Orchestration"];
+const STEPS = ["Discovery", "Architecture", "AI Team", "Orchestration"];
 
 export default function App() {
   const [formData, setFormData] = useState<FormData>({
@@ -37,7 +38,6 @@ export default function App() {
     contributingGuide: "",
   });
 
-  // Initialize all agents as selected by default
   const [agentSelection, setAgentSelection] = useState<AgentSelection>(
     agents.reduce((acc, agent) => ({
       ...acc,
@@ -83,13 +83,12 @@ export default function App() {
     const templateName = e.target.value;
     const selectedTemplate = templates.find(t => t.name === templateName);
     
-    // Check if form is dirty (has non-empty values)
     const isDirty = Object.values(formData).some(val => 
       Array.isArray(val) ? val.length > 0 : val !== ""
     );
 
-    if (isDirty) {
-      const confirmChange = window.confirm("Loading a new template will overwrite your current progress. Are you sure you want to continue?");
+    if (isDirty && templateName !== "") {
+      const confirmChange = window.confirm("Loading a new template will overwrite your current progress. Continue?");
       if (!confirmChange) {
         e.target.value = ""; 
         return;
@@ -158,7 +157,6 @@ export default function App() {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = buildMasterPrompt(formData, agentSelection);
 
-      // Using gemini-3-pro-preview for complex reasoning and agent orchestration simulation
       const response = await ai.models.generateContent({
         model: 'gemini-3-pro-preview',
         contents: prompt,
@@ -174,45 +172,23 @@ export default function App() {
 
   const handleSubmit = async () => {
     if (!validateStep(currentStep)) return;
-    
     setIsGenerating(true);
     setIsModalOpen(true);
-
     await generateFilesContent();
     setIsGenerating(false);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  }
-  
-  const handleDownload = () => {
-    const downloadLink = document.createElement("a");
-    const blobMd = new Blob([generatedMarkdown], { type: "text/markdown" });
-    downloadLink.href = URL.createObjectURL(blobMd);
-    downloadLink.download = `${formData.projectName.replace(/\s+/g, '-').toLowerCase()}-prd.md`;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-
-    const blobJson = new Blob([generatedJson], { type: "application/json" });
-    const downloadLinkJson = document.createElement("a");
-    downloadLinkJson.href = URL.createObjectURL(blobJson);
-    downloadLinkJson.download = "project-init.json";
-    document.body.appendChild(downloadLinkJson);
-    downloadLinkJson.click();
-    document.body.removeChild(downloadLinkJson);
-  };
-
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
-      <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
-        <header className="flex justify-between items-start mb-10">
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
+    <div className="min-h-screen bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-fixed bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-100/40 via-purple-100/40 to-sky-100/40 dark:from-indigo-950/40 dark:via-purple-950/40 dark:to-slate-950/80 pointer-events-none" />
+      
+      <div className="relative max-w-5xl mx-auto p-4 sm:p-6 lg:p-10">
+        <header className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+          <div className="text-center sm:text-left">
+            <h1 className="text-3xl sm:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-sky-600 to-indigo-600 dark:from-sky-400 dark:to-indigo-400 tracking-tight drop-shadow-sm">
               Project Architect AI
             </h1>
-            <p className="text-slate-600 dark:text-slate-400 mt-2">
+            <p className="text-slate-600 dark:text-slate-400 mt-2 font-medium">
               Orchestrate a team of specialized AI agents to build your Master Blueprint.
             </p>
           </div>
@@ -220,22 +196,22 @@ export default function App() {
         </header>
 
         <Stepper steps={STEPS} currentStep={currentStep} onStepClick={(step) => {
-          if (step < currentStep) setCurrentStep(step);
+           if (step < currentStep) setCurrentStep(step);
         }} />
         
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-          <div className="p-6 sm:p-8">
+        <div className="glass-panel rounded-2xl shadow-xl border border-white/50 dark:border-slate-800 backdrop-blur-md overflow-hidden transition-all duration-300">
+          <div className="p-6 sm:p-8 lg:p-10 min-h-[400px]">
             {/* Step 1: Project Discovery */}
             {currentStep === 0 && (
-              <div className="space-y-8 animate-fadeIn">
-                 <div className="mb-6 p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg">
+              <div key="step0" className="space-y-8 animate-fade-in-up">
+                 <div className="mb-8 p-6 bg-gradient-to-r from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700/60 rounded-xl shadow-sm">
                   <Select
-                    label="Load a Starter Template (Optional)"
+                    label="🚀 Load a Starter Template (Optional)"
                     id="template-loader"
                     onChange={handleTemplateChange}
                     value=""
                   >
-                    <option value="">Select a template to populate fields...</option>
+                    <option value="">Choose a starting point...</option>
                     {templates.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
                   </Select>
                 </div>
@@ -248,17 +224,17 @@ export default function App() {
                     onChange={(e) => handleChange('projectName', e.target.value)}
                     error={errors.projectName}
                     required
-                    placeholder="e.g., SaaS Analytics Platform"
+                    placeholder="e.g., OmniTask SaaS Platform"
                   />
                   <Textarea
                     label="Project Vision"
                     id="projectVision"
                     value={formData.projectVision}
                     onChange={(e) => handleChange('projectVision', e.target.value)}
-                    rows={4}
+                    rows={5}
                     error={errors.projectVision}
                     required
-                    placeholder="Describe the high-level goal, target audience, and core problem this project solves."
+                    placeholder="Describe the high-level goal, target audience, key problems solved, and expected business impact."
                   />
                 </FormFieldset>
               </div>
@@ -266,46 +242,48 @@ export default function App() {
 
             {/* Step 2: Architecture */}
             {currentStep === 1 && (
-              <div className="space-y-8 animate-fadeIn">
-                <FormFieldset title="Business Requirements">
+              <div key="step1" className="space-y-8 animate-fade-in-up">
+                <FormFieldset title="Requirements & Features">
                   <Textarea
                     label="User Stories & Key Features"
                     id="userStories"
                     value={formData.userStories}
                     onChange={(e) => handleChange('userStories', e.target.value)}
-                    placeholder="As a [user type], I want to [action], so that I can [benefit]."
-                    rows={6}
+                    placeholder="As a [User Role], I want to [Action], so that I can [Benefit]..."
+                    rows={8}
                     error={errors.userStories}
                     required
                   />
                 </FormFieldset>
 
-                <FormFieldset title="Technical Stack & Architecture">
-                  <MultiSelect
-                    label="Tech Stack Preference"
-                    options={techStackOptions}
-                    selectedOptions={formData.techStack}
-                    onChange={(selected) => handleChange('techStack', selected)}
-                  />
-                  <MultiSelect
-                    label="Integrations"
-                    options={integrationOptions}
-                    selectedOptions={formData.integrations}
-                    onChange={(selected) => handleChange('integrations', selected)}
-                  />
+                <FormFieldset title="Technical Architecture">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <MultiSelect
+                      label="Tech Stack Preference"
+                      options={techStackOptions}
+                      selectedOptions={formData.techStack}
+                      onChange={(selected) => handleChange('techStack', selected)}
+                    />
+                    <MultiSelect
+                      label="Third-Party Integrations"
+                      options={integrationOptions}
+                      selectedOptions={formData.integrations}
+                      onChange={(selected) => handleChange('integrations', selected)}
+                    />
+                  </div>
                    <Select
-                    label="Folder Structure"
+                    label="Folder Structure Pattern"
                     id="folderStructure"
                     value={formData.folderStructure}
                     onChange={(e) => handleChange('folderStructure', e.target.value)}
                     error={errors.folderStructure}
                     required
                   >
-                    <option value="">Select a structure</option>
+                    <option value="">Select an architecture pattern</option>
                     {folderStructureOptions.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                   </Select>
                    <MultiSelect
-                    label="Reusable Components"
+                    label="Core System Components"
                     options={componentOptions}
                     selectedOptions={formData.components}
                     onChange={(selected) => handleChange('components', selected)}
@@ -322,7 +300,7 @@ export default function App() {
                         error={errors.pullRequestTemplate}
                         required
                       >
-                        <option value="">Select a template</option>
+                        <option value="">Select style</option>
                         {prTemplateOptions.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                       </Select>
                       <Select
@@ -333,7 +311,7 @@ export default function App() {
                         error={errors.issueTemplate}
                         required
                       >
-                        <option value="">Select a template</option>
+                        <option value="">Select style</option>
                         {issueTemplateOptions.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                       </Select>
                       <Select
@@ -344,7 +322,7 @@ export default function App() {
                         error={errors.contributingGuide}
                         required
                       >
-                        <option value="">Select a guide</option>
+                        <option value="">Select style</option>
                         {contributingGuideOptions.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                       </Select>
                     </div>
@@ -354,10 +332,20 @@ export default function App() {
 
             {/* Step 3: AI Team Assembly */}
             {currentStep === 2 && (
-              <div className="space-y-6 animate-fadeIn">
-                 <div className="bg-sky-50 dark:bg-sky-900/20 p-4 rounded-lg border border-sky-100 dark:border-sky-800 text-sm text-sky-800 dark:text-sky-300 mb-6">
-                    <p className="font-semibold mb-1">Orchestrator Mode Active</p>
-                    <p>Select the AI Agents you want to consult for this project. Each agent has specific expertise and strict guardrails to ensure high-quality output. You can provide specific context to guide each agent.</p>
+              <div key="step2" className="space-y-6 animate-fade-in-up">
+                 <div className="bg-gradient-to-r from-sky-50 to-indigo-50 dark:from-sky-900/20 dark:to-indigo-900/20 p-5 rounded-xl border border-sky-100 dark:border-sky-800/50 shadow-sm">
+                    <div className="flex items-start gap-3">
+                        <div className="p-2 bg-sky-100 dark:bg-sky-800 rounded-lg text-sky-600 dark:text-sky-200">
+                             <SparklesIcon className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-sky-900 dark:text-sky-100 mb-1">AI Orchestration Mode</h3>
+                            <p className="text-sm text-sky-800/80 dark:text-sky-300 leading-relaxed">
+                                Customize your expert AI team. Each agent brings specific domain knowledge and strictly follows defined guardrails. 
+                                Toggle agents on/off and provide specific context to guide their contribution.
+                            </p>
+                        </div>
+                    </div>
                  </div>
                  
                 <AgentSelector 
@@ -370,39 +358,44 @@ export default function App() {
 
              {/* Step 4: Orchestration */}
              {currentStep === 3 && (
-              <div className="space-y-8 animate-fadeIn text-center py-10">
-                <div className="max-w-xl mx-auto space-y-6">
-                   <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-full inline-block">
-                      <SparklesIcon className="w-16 h-16 text-sky-500" />
+              <div key="step3" className="space-y-8 animate-fade-in-up text-center py-12">
+                <div className="max-w-xl mx-auto space-y-8">
+                   <div className="relative inline-block group">
+                       <div className="absolute inset-0 bg-sky-500 blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 rounded-full"></div>
+                       <div className="relative bg-white dark:bg-slate-800 p-8 rounded-full shadow-2xl border-4 border-slate-50 dark:border-slate-700">
+                          <SparklesIcon className="w-20 h-20 text-sky-500 animate-pulse-slow" />
+                       </div>
                    </div>
-                   <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Ready to Orchestrate</h2>
-                   <p className="text-slate-600 dark:text-slate-400">
-                     We have gathered your requirements and assembled your AI team. 
-                     The Orchestrator will now activate the selected agents to generate your Master Blueprint.
-                     <br/><br/>
-                     <span className="font-semibold">Selected Team Size:</span> {Object.values(agentSelection).filter(a => (a as AgentSelection[string]).selected).length} Agents
-                   </p>
                    
-                   <Button onClick={handleSubmit} className="w-full py-4 text-lg shadow-sky-500/20 shadow-lg">
-                      Start Orchestration Sequence
+                   <div>
+                       <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">Ready to Orchestrate</h2>
+                       <p className="text-slate-600 dark:text-slate-400 text-lg">
+                         Your requirements are set. Your <span className="font-semibold text-sky-600 dark:text-sky-400">{Object.values(agentSelection).filter(a => (a as AgentSelection[string]).selected).length} AI Agents</span> are standing by.
+                         <br/>The Orchestrator will now synthesize a Master Blueprint.
+                       </p>
+                   </div>
+                   
+                   <Button onClick={handleSubmit} className="w-full py-4 text-lg font-bold shadow-sky-500/30 shadow-xl hover:shadow-2xl hover:shadow-sky-500/40 transform hover:-translate-y-1 transition-all duration-300">
+                      Generate Master Blueprint
                    </Button>
                 </div>
               </div>
             )}
           </div>
           
-          <div className="bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-4 sm:px-8 flex justify-between items-center">
+          {/* Footer Navigation */}
+          <div className="bg-slate-50/80 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800 p-6 flex justify-between items-center backdrop-blur-sm">
              <Button 
                 onClick={handleBack} 
                 disabled={currentStep === 0}
-                className="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700"
+                className={`flex items-center gap-2 px-6 ${currentStep === 0 ? 'opacity-0 pointer-events-none' : ''} bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 shadow-sm`}
               >
-                Back
+                <ChevronLeftIcon className="w-4 h-4" /> Back
              </Button>
              
              {currentStep < STEPS.length - 1 && (
-               <Button onClick={handleNext}>
-                  Next Step
+               <Button onClick={handleNext} className="flex items-center gap-2 px-8 shadow-lg shadow-sky-500/20">
+                  Next Step <ChevronRightIcon className="w-4 h-4" />
                </Button>
              )}
           </div>
@@ -419,4 +412,26 @@ export default function App() {
       </div>
     </div>
   );
+  
+  function handleCloseModal() {
+    setIsModalOpen(false);
+  }
+  
+  function handleDownload() {
+    const downloadLink = document.createElement("a");
+    const blobMd = new Blob([generatedMarkdown], { type: "text/markdown" });
+    downloadLink.href = URL.createObjectURL(blobMd);
+    downloadLink.download = `${formData.projectName.replace(/\s+/g, '-').toLowerCase()}-prd.md`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+
+    const blobJson = new Blob([generatedJson], { type: "application/json" });
+    const downloadLinkJson = document.createElement("a");
+    downloadLinkJson.href = URL.createObjectURL(blobJson);
+    downloadLinkJson.download = "project-init.json";
+    document.body.appendChild(downloadLinkJson);
+    downloadLinkJson.click();
+    document.body.removeChild(downloadLinkJson);
+  }
 }

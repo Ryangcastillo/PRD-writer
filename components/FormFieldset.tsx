@@ -7,9 +7,9 @@ interface FormFieldsetProps {
 
 const FormFieldset: React.FC<FormFieldsetProps> = ({ title, children }) => {
   return (
-    <fieldset className="border border-slate-200 dark:border-slate-700/80 rounded-lg p-6 bg-slate-50 dark:bg-slate-800/50 shadow-md">
-      <legend className="text-lg font-semibold text-slate-800 dark:text-white px-2 -ml-2">{title}</legend>
-      <div className="space-y-6">
+    <fieldset className="border border-slate-200 dark:border-slate-700 rounded-xl p-6 sm:p-8 bg-white dark:bg-slate-900/40 shadow-sm hover:shadow-md transition-shadow duration-300">
+      <legend className="text-lg font-bold text-slate-800 dark:text-slate-100 px-3 bg-white dark:bg-slate-900 rounded-lg">{title}</legend>
+      <div className="space-y-6 pt-2">
         {children}
       </div>
     </fieldset>

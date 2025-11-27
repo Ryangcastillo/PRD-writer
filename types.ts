@@ -16,6 +16,7 @@ export interface Agent {
   id: string;
   name: string;
   role: string;
+  roleDescription: string; // New concise summary field
   description: string;
   prompt: string;
   guardrails: string[];
