@@ -1,0 +1,145 @@
+
+import type { FormData } from './types';
+
+export interface Template {
+  name: string;
+  data: FormData;
+}
+
+export const templates: Template[] = [
+  {
+    name: "SaaS Starter",
+    data: {
+      projectName: "SaaS Platform",
+      projectVision: "A modern SaaS platform to streamline customer relationship management.",
+      userStories: "As a sales manager, I want to view my team's performance dashboard.\nAs a sales rep, I want to log my calls and meetings easily.",
+      techStack: ["React", "Node.js", "Express.js", "PostgreSQL", "Redis", "Docker", "AWS"],
+      integrations: ["Stripe", "Auth0", "SendGrid"],
+      folderStructure: "Next.js Full-Stack",
+      components: ["Authentication System", "Payment Integration", "Admin Dashboard", "User Profile Management", "Email Notifications"],
+      pullRequestTemplate: "Detailed PR Template",
+      issueTemplate: "Feature Request Template",
+      contributingGuide: "Standard Contributing Guide",
+    },
+  },
+  {
+    name: "API Service",
+    data: {
+      projectName: "GeoLocation API",
+      projectVision: "A high-performance, reliable API for geolocation services.",
+      userStories: "As a developer, I want to get country data from an IP address.\nAs a developer, I want API key authentication to secure my requests.",
+      techStack: ["Node.js", "FastAPI", "PostgreSQL", "Redis", "Docker", "Kubernetes"],
+      integrations: ["Stripe", "Auth0"],
+      folderStructure: "Microservices Architecture",
+      components: ["Authentication System", "Payment Integration"],
+      pullRequestTemplate: "Standard PR Template",
+      issueTemplate: "Bug Report Template",
+      contributingGuide: "Minimal Contributing Guide",
+    },
+  },
+    {
+    name: "Personal Blog",
+    data: {
+      projectName: "My Developer Blog",
+      projectVision: "A personal blog to share technical articles and tutorials.",
+      userStories: "As an author, I want to write and publish articles in Markdown.\nAs a reader, I want to search for articles by tags.",
+      techStack: ["React", "Vercel"],
+      integrations: ["Algolia"],
+      folderStructure: "Next.js Full-Stack",
+      components: ["Search & Filter"],
+      pullRequestTemplate: "Minimal PR Template",
+      issueTemplate: "General Issue Template",
+      contributingGuide: "Minimal Contributing Guide",
+    },
+  },
+  {
+    name: "E-commerce Frontend",
+    data: {
+      projectName: "E-commerce Storefront",
+      projectVision: "A responsive and fast front-end for a modern e-commerce platform, providing an exceptional shopping experience.",
+      userStories: "As a customer, I want to browse products by category.\nAs a customer, I want to add items to my shopping cart.\nAs a customer, I want to securely check out and pay for my order.",
+      techStack: ["React", "Vercel", "PostgreSQL"],
+      integrations: ["Stripe", "Algolia", "Cloudinary"],
+      folderStructure: "Next.js Full-Stack",
+      components: ["Payment Integration", "Search & Filter", "User Profile Management"],
+      pullRequestTemplate: "Standard PR Template",
+      issueTemplate: "Bug Report Template",
+      contributingGuide: "Standard Contributing Guide",
+    },
+  },
+  {
+    name: "Data Science Project",
+    data: {
+      projectName: "Customer Churn Prediction",
+      projectVision: "A data science project to analyze customer data and build a predictive model for customer churn.",
+      userStories: "As a data scientist, I want to ingest and clean customer data from a database.\nAs a business analyst, I want to see a dashboard visualizing key churn indicators.",
+      techStack: ["FastAPI", "Django", "PostgreSQL", "Docker"],
+      integrations: [],
+      folderStructure: "Traditional MVC",
+      components: ["Data Visualization", "Admin Dashboard"],
+      pullRequestTemplate: "Minimal PR Template",
+      issueTemplate: "General Issue Template",
+      contributingGuide: "Minimal Contributing Guide",
+    },
+  },
+  {
+    name: "Mobile App Boilerplate",
+    data: {
+      projectName: "Social Mobile App",
+      projectVision: "A boilerplate for a cross-platform mobile application focusing on social networking features.",
+      userStories: "As a user, I want to create a profile with a picture and bio.\nAs a user, I want to log in using my social media account.\nAs a user, I want to see a feed of posts from people I follow.",
+      techStack: ["React", "Node.js", "MongoDB", "Vercel"],
+      integrations: ["Firebase", "Supabase", "Auth0", "Cloudinary"],
+      folderStructure: "Standard Monorepo",
+      components: ["Authentication System", "User Profile Management", "File Upload Component"],
+      pullRequestTemplate: "Detailed PR Template",
+      issueTemplate: "Feature Request Template",
+      contributingGuide: "Standard Contributing Guide",
+    },
+  },
+  {
+    name: "Static Portfolio Website",
+    data: {
+      projectName: "Professional Design Portfolio",
+      projectVision: "A sleek, high-performance static website to showcase design work and case studies to potential clients.",
+      userStories: "As a visitor, I want to view a gallery of project images.\nAs a visitor, I want to fill out a contact form to get in touch.\nAs a site owner, I want to easily update content using Markdown files.",
+      techStack: ["Svelte", "TypeScript", "Vercel", "Tailwind CSS"],
+      integrations: ["SendGrid", "Cloudinary"],
+      folderStructure: "Standard Monorepo",
+      components: ["Email Notifications", "Data Visualization"],
+      pullRequestTemplate: "Minimal PR Template",
+      issueTemplate: "General Issue Template",
+      contributingGuide: "Minimal Contributing Guide",
+    },
+  },
+  {
+    name: "Real-time Chat Application",
+    data: {
+      projectName: "TeamSync Chat",
+      projectVision: "A real-time collaboration tool for remote teams to communicate via text and voice channels.",
+      userStories: "As a user, I want to join specific channels for different topics.\nAs a user, I want to see when other users are typing.\nAs an admin, I want to moderate messages and ban users.",
+      techStack: ["React", "Node.js", "Redis", "GraphQL", "Docker", "Kubernetes"],
+      integrations: ["Auth0", "Sentry", "Slack API"],
+      folderStructure: "Microservices Architecture",
+      components: ["Real-time Chat", "Authentication System", "User Profile Management"],
+      pullRequestTemplate: "Detailed PR Template",
+      issueTemplate: "Bug Report Template",
+      contributingGuide: "Standard Contributing Guide",
+    },
+  },
+  {
+    name: "Inventory Management System",
+    data: {
+      projectName: "WarehouseOS",
+      projectVision: "An internal tool for tracking stock levels, managing suppliers, and processing purchase orders efficiently.",
+      userStories: "As a warehouse manager, I want to scan barcodes to update stock.\nAs a procurement officer, I want to generate purchase orders automatically when stock is low.",
+      techStack: ["Angular", "Django", "PostgreSQL", "Azure", "Jenkins"],
+      integrations: ["Salesforce", "Stripe Connect", "SendGrid"],
+      folderStructure: "Clean Architecture",
+      components: ["Admin Dashboard", "Role-Based Access Control", "Data Visualization", "Search & Filter"],
+      pullRequestTemplate: "Standard PR Template",
+      issueTemplate: "Feature Request Template",
+      contributingGuide: "Standard Contributing Guide",
+    },
+  },
+];
